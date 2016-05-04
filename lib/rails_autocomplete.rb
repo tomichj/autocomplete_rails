@@ -5,5 +5,4 @@ require 'rails_autocomplete/controller'
 module RailsAutocomplete
 end
 
-ActiveRecord::Base.extend RailsAutocomplete::Controller
-
+ActionController::Base.send(:include, RailsAutocomplete::Controller)

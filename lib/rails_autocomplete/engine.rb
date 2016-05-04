@@ -1,3 +1,5 @@
+require 'rails_autocomplete/controller'
+
 module RailsAutocomplete
   class Engine < ::Rails::Engine
     config.generators do |g|
@@ -6,3 +8,4 @@ module RailsAutocomplete
     end
   end
 end
+

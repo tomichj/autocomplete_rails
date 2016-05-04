@@ -3,7 +3,7 @@ require File.expand_path('../boot', __FILE__)
 require 'rails/all'
 
 Bundler.require(*Rails.groups)
-require "rails_autocomplete"
+require 'rails_autocomplete'
 
 module Dummy
   class Application < Rails::Application
@@ -24,3 +24,4 @@ module Dummy
   end
 end
 
+Rails.application.routes.default_url_options[:host] = 'localhost:3000'

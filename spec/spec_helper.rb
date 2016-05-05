@@ -10,6 +10,7 @@ require 'database_cleaner'
 require 'factory_girl'
 require 'timecop'
 
+
 Rails.backtrace_cleaner.remove_silencers!
 DatabaseCleaner.strategy = :truncation
 

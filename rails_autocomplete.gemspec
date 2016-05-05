@@ -27,5 +27,4 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'shoulda-matchers', '~> 2.8'
   s.add_development_dependency 'database_cleaner', '~> 1.5'
   s.add_development_dependency 'timecop', '~> 0.8'
-
 end

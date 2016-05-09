@@ -6,21 +6,27 @@ module RailsAutocomplete
 
     module ClassMethods
       #
-      # Generate an autocomplete controller action and routes.
+      # Generate an autocomplete controller action.
       #
-      # When executing your autocomplete controller action, you must have params[:search_term]
+      # Parameters:
+      # * model_sym - the model to autocomplete.
+      # * value_method - method on model to autocomplete, supplies the 'value' field in results. Also used
+      #                  as the label unless you supply options[:label_method]
+      # * options - hash of optional settings.
       #
-      # options:
-      # * :label_method - call a separate method for the label, otherwise defaults to value_method
-      # * :full_model - load full model, default is false
-      # * :autocomplete_limit - default is 10
-      # * :case_sensitive - default is false
+      # Options:
+      # * :label_method - call a separate method for the label, otherwise defaults to value_method. If your label
+      #                   method is a method that is *not* a column in your DB, then also use options[:full_model].
+      # * :full_model - load full model instead of only selecting the specified values. Default is false.
+      # * :autocomplete_limit - default is 10.
+      # * :case_sensitive - default is false.
+      # * :additional_data -
+      #
+      # The resulting autocomplete controller method name is
+      #   autocomplete_#{model}
       #
       def autocomplete(model_sym, value_method, options = {})
-        #
-        # Add autocomplete controller method.
-        #
-        label_method = options[:value_method] || value_method
+        label_method = options[:label_method] || value_method
         model_constant = model_sym.to_s.camelize.constantize
         autocomplete_method_name = "autocomplete_#{model_sym}_#{value_method}"
 
@@ -28,29 +34,19 @@ module RailsAutocomplete
           results = autocomplete_results(model_constant, value_method, label_method, options)
           render json: autocomplete_build_json(results, value_method, label_method), root: false
         end
-
-        c_path = controller_path
-        c_name = controller_name
-        Rails.application.routes.disable_clear_and_finalize = true
-        Rails.application.routes.draw do
-          get "/#{c_path}/autocomplete_#{model_sym}_#{value_method}",
-              to: "#{c_path}##{autocomplete_method_name}",
-              as: "#{c_name}_#{autocomplete_method_name}"
-        end
       end
     end
 
+    protected
+
     def autocomplete_results(model_constant, value_method, label_method, options)
       search_term = params[:search_term]
-      if search_term.blank?
-        results = {}
-      else
-        results = model_constant.where(nil) # make an empty scope to add select, where, etc, to.
-        results = results.select(autocomplete_select_clause(model_constant, value_method, label_method)) unless options[:full_model]
-        results.where(autocomplete_where_clause(model_constant, search_term, value_method, options)).
-          limit(autocomplete_limit_clause(options)).
-          order(autocomplete_order_clause(model_constant, value_method, options))
-      end
+      return {} if search_term.blank?
+      results = model_constant.where(nil) # make an empty scope to add select, where, etc, to.
+      results = results.select(autocomplete_select_clause(model_constant, value_method, label_method)) unless options[:full_model]
+      results.where(autocomplete_where_clause(model_constant, search_term, value_method, options)).
+        limit(autocomplete_limit_clause(options)).
+        order(autocomplete_order_clause(model_constant, value_method, options))
       results
     end
 
@@ -60,10 +56,9 @@ module RailsAutocomplete
     end
 
     def autocomplete_where_clause(model_constant, search_term, value_method, options)
-      like = (postgres?(model_constant) && !options[:case_sensitive]) ? 'ILIKE' : 'LIKE'
       table_name = model_constant.table_name
       lower = options[:case_sensitive] ? '' : 'LOWER'
-      ["#{lower}(#{table_name}.#{value_method}) #{like} #{lower}(?)", search_term]
+      ["#{lower}(#{table_name}.#{value_method}) LIKE #{lower}(?)", search_term]
     end
 
     def autocomplete_limit_clause(options)
@@ -78,7 +73,7 @@ module RailsAutocomplete
 
     def autocomplete_build_json(results, value_method, label_method)
       results.collect do |result|
-        HashWithIndifferentAccess.new id: result.id, label: result.send(label_method), value: result.send(value_method)
+        HashWithIndifferentAccess.new(id: result.id, label: result.send(label_method), value: result.send(value_method))
       end
     end
 

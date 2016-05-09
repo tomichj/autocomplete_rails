@@ -19,11 +19,6 @@ describe RailsAutocomplete::Controller do
         json = JSON.parse(response.body)
         expect(json.size).to eq(3)
       end
-
-      it 'gug' do
-        puts 'routes? ' + Rails.application.routes.inspect
-      end
-
     end
   end
 end

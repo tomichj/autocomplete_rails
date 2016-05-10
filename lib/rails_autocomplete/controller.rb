@@ -20,7 +20,7 @@ module RailsAutocomplete
       # * :full_model - load full model instead of only selecting the specified values. Default is false.
       # * :autocomplete_limit - default is 10.
       # * :case_sensitive - default is false.
-      # * :additional_data -
+      # * :additional_data - collect additonal data. Will be added to select unless full_model is invoked.
       #
       # The resulting autocomplete controller method name is
       #   autocomplete_#{model}
@@ -39,20 +39,26 @@ module RailsAutocomplete
 
     protected
 
-    def autocomplete_results(model_constant, value_method, label_method, options)
+    def autocomplete_results(model_constant, value_method, label_method = nil, options)
       search_term = params[:search_term]
       return {} if search_term.blank?
       results = model_constant.where(nil) # make an empty scope to add select, where, etc, to.
-      results = results.select(autocomplete_select_clause(model_constant, value_method, label_method)) unless options[:full_model]
+      results = results.select(autocomplete_select_clause(model_constant, value_method, label_method, options)) unless
+        options[:full_model]
       results.where(autocomplete_where_clause(model_constant, search_term, value_method, options)).
         limit(autocomplete_limit_clause(options)).
         order(autocomplete_order_clause(model_constant, value_method, options))
       results
     end
 
-    def autocomplete_select_clause(model_constant, value_method, label_method)
+    def autocomplete_select_clause(model_constant, value_method, label_method, options)
       table_name = model_constant.table_name
-      ["#{table_name}.#{model_constant.primary_key}", "#{table_name}.#{value_method}", "#{table_name}.#{label_method}"]
+      selects = []
+      selects << "#{table_name}.#{model_constant.primary_key}"
+      selects << "#{table_name}.#{value_method}"
+      selects << "#{table_name}.#{label_method}" if label_method
+      options[:additional_data].each { |datum| selects << "#{table_name}.#{datum}" } if options[:additional_data]
+      selects
     end
 
     def autocomplete_where_clause(model_constant, search_term, value_method, options)

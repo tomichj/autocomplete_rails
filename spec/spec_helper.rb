@@ -14,11 +14,14 @@ require 'timecop'
 Rails.backtrace_cleaner.remove_silencers!
 DatabaseCleaner.strategy = :truncation
 
-# No longer autoloading support, individually requiring instead.
 #
-# Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
+# Require up all support files.
+#
+Dir[File.join(File.dirname(__FILE__), 'support/**/*.rb')].each { |f| require f }
 
+#
 # Load factory girl factories.
+#
 Dir[File.join(File.dirname(__FILE__), 'factories/**/*.rb')].each { |f| require f }
 
 # Build test database in spec/dummy/db/
@@ -41,6 +44,8 @@ RSpec.configure do |config|
   config.mock_with :rspec do |mocks|
     mocks.syntax = :expect
   end
+
+  config.include Requests::JsonHelpers, type: :controller
 
   config.after(:each, type: :feature) do
     DatabaseCleaner.clean       # Truncate the database

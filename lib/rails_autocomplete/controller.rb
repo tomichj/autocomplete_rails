@@ -45,7 +45,7 @@ module RailsAutocomplete
       results = model_constant.where(nil) # make an empty scope to add select, where, etc, to.
       results = results.select(autocomplete_select_clause(model_constant, value_method, label_method, options)) unless
         options[:full_model]
-      results.where(autocomplete_where_clause(model_constant, search_term, value_method, options)).
+      results.where(autocomplete_where_clause(search_term, model_constant, value_method, options)).
         limit(autocomplete_limit_clause(options)).
         order(autocomplete_order_clause(model_constant, value_method, options))
       results
@@ -61,7 +61,7 @@ module RailsAutocomplete
       selects
     end
 
-    def autocomplete_where_clause(model_constant, search_term, value_method, options)
+    def autocomplete_where_clause(search_term, model_constant, value_method, options)
       table_name = model_constant.table_name
       lower = options[:case_sensitive] ? '' : 'LOWER'
       ["#{lower}(#{table_name}.#{value_method}) LIKE #{lower}(?)", search_term]

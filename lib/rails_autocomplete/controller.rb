@@ -78,9 +78,14 @@ module RailsAutocomplete
     end
 
     def autocomplete_build_json(results, value_method, label_method, options)
-      # puts results.inspect
       results.collect do |result|
-        HashWithIndifferentAccess.new(id: result.id, label: result.send(label_method), value: result.send(value_method))
+        data = HashWithIndifferentAccess.new(id: result.id,
+                                             label: result.send(label_method),
+                                             value: result.send(value_method))
+        options[:additional_data].each do |method|
+          data[method] = result.send(method)
+        end if options[:additional_data]
+        data
       end
     end
 

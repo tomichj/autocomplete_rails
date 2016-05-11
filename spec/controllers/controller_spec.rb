@@ -75,10 +75,23 @@ describe RailsAutocomplete::Controller do
   end
 
   context '#autocomplete_build_json' do
-    it 'renders value-only completion' do
+    it 'renders value-only' do
       expect(subject.autocomplete_build_json(User.all, :email, :email, {})).to(
         contain_exactly({ 'id' =>1, 'label' => 'user1@example.com', 'value' => 'user1@example.com' },
                         { 'id' =>2, 'label' => 'user2@example.com', 'value' => 'user2@example.com' }))
+    end
+
+    it 'renders value and label' do
+      expect(subject.autocomplete_build_json(User.all, :email, :first_name, {})).to(
+        contain_exactly({ 'id' => 1, 'label' => 'FirstName1', 'value' => 'user1@example.com' },
+                        { 'id' => 2, 'label' => 'FirstName2', 'value' => 'user2@example.com' }))
+    end
+
+    it 'renders value, label, and additional data' do
+      expect = [{ 'id' => 1, 'label' => 'FirstName1', 'value' => 'user1@example.com', 'last_name' => 'LastName1' },
+                { 'id' => 2, 'label' => 'FirstName2', 'value' => 'user2@example.com', 'last_name' => 'LastName2' }]
+      expect(subject.autocomplete_build_json(User.all, :email, :first_name, { additional_data: [:last_name] })).to(
+        contain_exactly(*expect))
     end
   end
 

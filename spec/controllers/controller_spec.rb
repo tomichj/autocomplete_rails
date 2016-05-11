@@ -1,13 +1,18 @@
 require 'spec_helper'
 
 describe RailsAutocomplete::Controller do
+  before(:all) do
+    create(:user, :with_full_name)
+    create(:user, :with_full_name)
+  end
+
   before do
     class FakesController < ApplicationController
       include RailsAutocomplete::Controller
       autocomplete :user, :email
     end
     FakesController.send(:public, :autocomplete_select_clause, :autocomplete_where_clause, :autocomplete_order_clause,
-                         :autocomplete_limit_clause)
+                         :autocomplete_limit_clause, :autocomplete_build_json)
   end
   after { Object.send :remove_const, :FakesController }
   subject { FakesController.new }
@@ -69,17 +74,18 @@ describe RailsAutocomplete::Controller do
     end
   end
 
-  
+  context '#autocomplete_build_json' do
+    it 'renders value-only completion' do
+      expect(subject.autocomplete_build_json(User.all, :email, :email, {})).to(
+        contain_exactly({ 'id' =>1, 'label' => 'user1@example.com', 'value' => 'user1@example.com' },
+                        { 'id' =>2, 'label' => 'user2@example.com', 'value' => 'user2@example.com' }))
+    end
+  end
 
   describe UsersController, type: :controller do
     it { respond_to? :autocomplete_user_email }
 
-    context 'autcomplete with 3 users in db' do
-      before :all do
-        @user1 = create(:user, :with_full_name)
-        create(:user, :with_full_name)
-        create(:user, :with_full_name)
-      end
+    context 'simple search term' do
       before :each do
         get :autocomplete_user_email, search_term: 'user'
       end
@@ -89,7 +95,7 @@ describe RailsAutocomplete::Controller do
       end
 
       it 'returns 3 users' do
-        expect(json.size).to eq(3)
+        expect(json.size).to eq(2)
       end
     end
   end

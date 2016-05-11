@@ -32,7 +32,7 @@ module RailsAutocomplete
 
         define_method(autocomplete_method_name) do
           results = autocomplete_results(model_constant, value_method, label_method, options)
-          render json: autocomplete_build_json(results, value_method, label_method), root: false
+          render json: autocomplete_build_json(results, value_method, label_method, options), root: false
         end
       end
     end
@@ -77,7 +77,8 @@ module RailsAutocomplete
       "LOWER(#{table_prefix}#{value_method}) ASC"
     end
 
-    def autocomplete_build_json(results, value_method, label_method)
+    def autocomplete_build_json(results, value_method, label_method, options)
+      # puts results.inspect
       results.collect do |result|
         HashWithIndifferentAccess.new(id: result.id, label: result.send(label_method), value: result.send(value_method))
       end

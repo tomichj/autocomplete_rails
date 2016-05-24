@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe AutocompleteRails::Controller do
   before(:all) do
-    create(:user, :with_full_name)
-    create(:user, :with_full_name)
+    @user1 = create(:user, :with_full_name)
+    @user2 = create(:user, :with_full_name)
   end
 
   before do
@@ -77,19 +77,19 @@ describe AutocompleteRails::Controller do
   context '#autocomplete_build_json' do
     it 'renders value-only' do
       expect(subject.autocomplete_build_json(User.all, :email, :email, {})).to(
-        contain_exactly({ 'id' =>1, 'label' => 'user1@example.com', 'value' => 'user1@example.com' },
-                        { 'id' =>2, 'label' => 'user2@example.com', 'value' => 'user2@example.com' }))
+        contain_exactly({ id: 1, label: @user1.email, value: @user1.email },
+                        { id: 2, label: @user2.email, value: @user2.email }))
     end
 
     it 'renders value and label' do
       expect(subject.autocomplete_build_json(User.all, :email, :first_name, {})).to(
-        contain_exactly({ 'id' => 1, 'label' => 'FirstName1', 'value' => 'user1@example.com' },
-                        { 'id' => 2, 'label' => 'FirstName2', 'value' => 'user2@example.com' }))
+        contain_exactly({ id: 1, label: @user1.first_name, value: @user1.email },
+                        { id: 2, label: @user2.first_name, value: @user2.email }))
     end
 
     it 'renders value, label, and additional data' do
-      expect = [{ 'id' => 1, 'label' => 'FirstName1', 'value' => 'user1@example.com', 'last_name' => 'LastName1' },
-                { 'id' => 2, 'label' => 'FirstName2', 'value' => 'user2@example.com', 'last_name' => 'LastName2' }]
+      expect = [{ id: 1, label: @user1.first_name, value: @user1.email, last_name: @user1.last_name },
+                { id: 2, label: @user2.first_name, value: @user2.email, last_name: @user2.last_name }]
       expect(subject.autocomplete_build_json(User.all, :email, :first_name, { additional_data: [:last_name] })).to(
         contain_exactly(*expect))
     end

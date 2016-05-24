@@ -1,4 +1,4 @@
 # desc "Explaining what the task does"
-# task :rails_autocomplete do
+# task :autocomplete_rails do
 #   # Task goes here
 # end

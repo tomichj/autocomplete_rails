@@ -1,6 +1,6 @@
-require 'rails_autocomplete/controller'
+require 'autocomplete_rails/controller'
 
-module RailsAutocomplete
+module AutocompleteRails
   class Engine < ::Rails::Engine
     config.generators do |g|
       g.test_framework :rspec

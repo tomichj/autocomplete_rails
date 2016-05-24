@@ -1,17 +1,17 @@
 $:.push File.expand_path("../lib", __FILE__)
 
 # Maintain your gem's version:
-require "rails_autocomplete/version"
+require "autocomplete_rails/version"
 
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
-  s.name        = 'rails_autocomplete'
-  s.version     = RailsAutocomplete::VERSION
+  s.name        = 'autocomplete_rails'
+  s.version     = AutocompleteRails::VERSION
   s.authors     = ['Justin Tomich']
   s.email       = ['justin@tomich.org']
-  s.homepage    = 'https://github.com/tomichj/rails_autocomplete'
-  s.summary     = "Easily use jQuery's autocomplete plugin."
-  s.description = "Easily use jQuery's autocomplete plugin."
+  s.homepage    = 'https://github.com/tomichj/autocomplete_rails'
+  s.summary     = "Easily use jQuery's autocomplete plugin with rails applications."
+  s.description = "Easily use jQuery's autocomplete plugin with rails applications."
   s.license     = 'MIT'
 
   s.files = Dir['{app,config,db,lib}/**/*', 'MIT-LICENSE', 'Rakefile', 'README.rdoc']

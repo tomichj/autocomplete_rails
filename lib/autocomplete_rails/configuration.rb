@@ -1,4 +1,4 @@
-module RailsAutocomplete
+module AutocompleteRails
   class Configuration
     attr_accessor :routes
 

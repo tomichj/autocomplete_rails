@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe RailsAutocomplete::Controller do
+describe AutocompleteRails::Controller do
   before(:all) do
     create(:user, :with_full_name)
     create(:user, :with_full_name)
@@ -8,7 +8,7 @@ describe RailsAutocomplete::Controller do
 
   before do
     class FakesController < ApplicationController
-      include RailsAutocomplete::Controller
+      include AutocompleteRails::Controller
       autocomplete :user, :email
     end
     FakesController.send(:public, :autocomplete_select_clause, :autocomplete_where_clause, :autocomplete_order_clause,
@@ -36,7 +36,7 @@ describe RailsAutocomplete::Controller do
   end
 
   context '#autocomplete_where_clause' do
-    it 'builds users.email where caluse with search term' do
+    it 'builds users.email where clause with search term' do
       expected = ['LOWER(users.email) LIKE LOWER(?)', 'gug']
       expect(subject.autocomplete_where_clause('gug', User, :email, {})).to contain_exactly(*expected)
     end

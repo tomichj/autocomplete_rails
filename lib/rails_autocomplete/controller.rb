@@ -39,30 +39,30 @@ module RailsAutocomplete
 
     protected
 
-    def autocomplete_results(model_constant, value_method, label_method = nil, options)
+    def autocomplete_results(model_class, value_method, label_method = nil, options)
       search_term = params[:search_term]
       return {} if search_term.blank?
-      results = model_constant.where(nil) # make an empty scope to add select, where, etc, to.
-      results = results.select(autocomplete_select_clause(model_constant, value_method, label_method, options)) unless
+      results = model_class.where(nil) # make an empty scope to add select, where, etc, to.
+      results = results.select(autocomplete_select_clause(model_class, value_method, label_method, options)) unless
         options[:full_model]
-      results.where(autocomplete_where_clause(search_term, model_constant, value_method, options)).
+      results.where(autocomplete_where_clause(search_term, model_class, value_method, options)).
         limit(autocomplete_limit_clause(options)).
-        order(autocomplete_order_clause(model_constant, value_method, options))
+        order(autocomplete_order_clause(model_class, value_method, options))
       results
     end
 
-    def autocomplete_select_clause(model_constant, value_method, label_method, options)
-      table_name = model_constant.table_name
+    def autocomplete_select_clause(model_class, value_method, label_method, options)
+      table_name = model_class.table_name
       selects = []
-      selects << "#{table_name}.#{model_constant.primary_key}"
+      selects << "#{table_name}.#{model_class.primary_key}"
       selects << "#{table_name}.#{value_method}"
       selects << "#{table_name}.#{label_method}" if label_method
       options[:additional_data].each { |datum| selects << "#{table_name}.#{datum}" } if options[:additional_data]
       selects
     end
 
-    def autocomplete_where_clause(search_term, model_constant, value_method, options)
-      table_name = model_constant.table_name
+    def autocomplete_where_clause(search_term, model_class, value_method, options)
+      table_name = model_class.table_name
       lower = options[:case_sensitive] ? '' : 'LOWER'
       ["#{lower}(#{table_name}.#{value_method}) LIKE #{lower}(?)", search_term]
     end
@@ -71,9 +71,9 @@ module RailsAutocomplete
       options[:limit] || 10
     end
 
-    def autocomplete_order_clause(model_constant, value_method, options)
+    def autocomplete_order_clause(model_class, value_method, options)
       return options[:order] if options[:order]
-      table_prefix = "#{model_constant.table_name}."
+      table_prefix = "#{model_class.table_name}."
       "LOWER(#{table_prefix}#{value_method}) ASC"
     end
 
@@ -89,8 +89,8 @@ module RailsAutocomplete
       end
     end
 
-    def postgres?(model_constant)
-      model_constant.connection.class.to_s.match /Postgre/
+    def postgres?(model_class)
+      model_class.connection.class.to_s.match /Postgre/
     end
   end
 end

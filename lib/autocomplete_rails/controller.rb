@@ -8,15 +8,23 @@ module AutocompleteRails
       #
       # Generate an autocomplete controller action.
       #
+      # The generated method is named  "autocomplete_#{model_class}_#{value_method}", e.g.
+      #
+      #   class ProductController
+      #     autocomplete :user, :email
+      #   end
+      #
+      # generates a method named autocomplete_user_email.
+      #
       # Parameters:
-      # * model_class - the model to autocomplete.
-      # * value_method - method on model to autocomplete, supplies the 'value' field in results. Also used
-      #                  as the label unless you supply options[:label_method]
+      # * model_class - symbol of the model class to autocomplete.
+      # * value_method - symbol of the method on model to autocomplete, supplies the 'value' field in results.
+      #                  Also used as the label unless you supply options[:label_method]
       # * options - hash of optional settings.
       #
       # Options:
       # * :label_method - call a separate method for the label, otherwise defaults to value_method. If your label
-      #                   method is a method that is *not* a column in your DB, then also use options[:full_model].
+      #                   method is a method that is *not* a column in your DB, you may need options[:full_model].
       # * :full_model - load full model instead of only selecting the specified values. Default is false.
       # * :limit - default is 10.
       # * :case_sensitive - default is false.
@@ -24,6 +32,7 @@ module AutocompleteRails
       # * :full_search - search the entire value string for the term. Defaults to false, in which case the string must
       #                  start with the term.
       #
+      # Be sure to add a route to the generated controller method.
       #
       def autocomplete(model_class, value_method, options = {})
         label_method = options[:label_method] || value_method
@@ -49,7 +58,6 @@ module AutocompleteRails
         where(autocomplete_where_clause(search_term, model_class, value_method, options)).
         limit(autocomplete_limit_clause(options)).
         order(autocomplete_order_clause(model_class, value_method, options))
-      # results
     end
 
     def autocomplete_select_clause(model_class, value_method, label_method, options)

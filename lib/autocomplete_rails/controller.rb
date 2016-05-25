@@ -9,7 +9,7 @@ module AutocompleteRails
       # Generate an autocomplete controller action.
       #
       # Parameters:
-      # * model_sym - the model to autocomplete.
+      # * model_class - the model to autocomplete.
       # * value_method - method on model to autocomplete, supplies the 'value' field in results. Also used
       #                  as the label unless you supply options[:label_method]
       # * options - hash of optional settings.
@@ -20,15 +20,15 @@ module AutocompleteRails
       # * :full_model - load full model instead of only selecting the specified values. Default is false.
       # * :limit - default is 10.
       # * :case_sensitive - default is false.
-      # * :additional_data - collect additonal data. Will be added to select unless full_model is invoked.
+      # * :additional_data - collect additional data. Will be added to select unless full_model is invoked.
+      # * :full_search - search the entire value string for the term. Defaults to false, in which case the string must
+      #                  start with the term.
       #
-      # The resulting autocomplete controller method name is
-      #   autocomplete_#{model}
       #
-      def autocomplete(model_sym, value_method, options = {})
+      def autocomplete(model_class, value_method, options = {})
         label_method = options[:label_method] || value_method
-        model_constant = model_sym.to_s.camelize.constantize
-        autocomplete_method_name = "autocomplete_#{model_sym}_#{value_method}"
+        model_constant = model_class.to_s.camelize.constantize
+        autocomplete_method_name = "autocomplete_#{model_class}_#{value_method}"
 
         define_method(autocomplete_method_name) do
           results = autocomplete_results(model_constant, value_method, label_method, options)
@@ -45,10 +45,11 @@ module AutocompleteRails
       results = model_class.where(nil) # make an empty scope to add select, where, etc, to.
       results = results.select(autocomplete_select_clause(model_class, value_method, label_method, options)) unless
         options[:full_model]
-      results.where(autocomplete_where_clause(search_term, model_class, value_method, options)).
+      results.
+        where(autocomplete_where_clause(search_term, model_class, value_method, options)).
         limit(autocomplete_limit_clause(options)).
         order(autocomplete_order_clause(model_class, value_method, options))
-      results
+      # results
     end
 
     def autocomplete_select_clause(model_class, value_method, label_method, options)
@@ -61,18 +62,23 @@ module AutocompleteRails
       selects
     end
 
-    def autocomplete_where_clause(search_term, model_class, value_method, options)
+    def autocomplete_where_clause(term, model_class, value_method, options)
+      term = "#{term.gsub(/([_%\\])/, '\\\\\1')}" # escape any _'s or %'s in the search term
+      term = "#{term}%"
+      term = "%#{term}" if options[:full_search]
       table_name = model_class.table_name
       lower = options[:case_sensitive] ? '' : 'LOWER'
-      ["#{lower}(#{table_name}.#{value_method}) LIKE #{lower}(?)", search_term]
+      ["#{lower}(#{table_name}.#{value_method}) LIKE #{lower}(?) ESCAPE \"\\\"", term]
     end
 
     def autocomplete_limit_clause(options)
-      options[:limit] || 10
+      options[:limit] ||= 10
     end
 
     def autocomplete_order_clause(model_class, value_method, options)
       return options[:order] if options[:order]
+
+      # default to ASC order
       table_prefix = "#{model_class.table_name}."
       "LOWER(#{table_prefix}#{value_method}) ASC"
     end

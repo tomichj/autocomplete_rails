@@ -18,7 +18,7 @@ module AutocompleteRails
       # * :label_method - call a separate method for the label, otherwise defaults to value_method. If your label
       #                   method is a method that is *not* a column in your DB, then also use options[:full_model].
       # * :full_model - load full model instead of only selecting the specified values. Default is false.
-      # * :autocomplete_limit - default is 10.
+      # * :limit - default is 10.
       # * :case_sensitive - default is false.
       # * :additional_data - collect additonal data. Will be added to select unless full_model is invoked.
       #
@@ -40,7 +40,7 @@ module AutocompleteRails
     protected
 
     def autocomplete_results(model_class, value_method, label_method = nil, options)
-      search_term = params[:search_term]
+      search_term = params[:term]
       return {} if search_term.blank?
       results = model_class.where(nil) # make an empty scope to add select, where, etc, to.
       results = results.select(autocomplete_select_clause(model_class, value_method, label_method, options)) unless

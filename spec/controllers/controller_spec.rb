@@ -100,7 +100,7 @@ describe AutocompleteRails::Controller do
 
     context 'simple search term' do
       before :each do
-        get :autocomplete_user_email, search_term: 'user'
+        get :autocomplete_user_email, term: 'user'
       end
 
       it 'is successful' do

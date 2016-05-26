@@ -35,13 +35,13 @@ module AutocompleteRails
       #
       # Be sure to add a route to the generated controller method.
       #
-      def autocomplete(model, value_method, options = {})
+      def autocomplete(model_symbol, value_method, options = {})
         label_method = options[:label_method] || value_method
-        model_constant = model.to_s.camelize.constantize
-        autocomplete_method_name = "autocomplete_#{model}_#{value_method}"
+        model = model_symbol.to_s.camelize.constantize
+        autocomplete_method_name = "autocomplete_#{model_symbol}_#{value_method}"
 
         define_method(autocomplete_method_name) do
-          results = autocomplete_results(model_constant, value_method, label_method, options)
+          results = autocomplete_results(model, value_method, label_method, options)
           render json: autocomplete_build_json(results, value_method, label_method, options), root: false
         end
       end
@@ -49,36 +49,36 @@ module AutocompleteRails
 
     protected
 
-    def autocomplete_results(model_class, value_method, label_method = nil, options)
+    def autocomplete_results(model, value_method, label_method = nil, options)
       term = params[:term]
       return {} if term.blank?
 
-      results = model_class.where(nil) # make an empty scope to add select, where, etc, to.
+      results = model.where(nil) # make an empty scope to add select, where, etc, to.
       scopes  = Array.new(options[:scopes])
       scopes.each { |scope| results = results.send(scope) } unless scopes.empty?
-      results = results.select(autocomplete_select_clause(model_class, value_method, label_method, options)) unless
+      results = results.select(autocomplete_select_clause(model, value_method, label_method, options)) unless
         options[:full_model]
       results.
-        where(autocomplete_where_clause(term, model_class, value_method, options)).
+        where(autocomplete_where_clause(term, model, value_method, options)).
         limit(autocomplete_limit_clause(options)).
-        order(autocomplete_order_clause(model_class, value_method, options))
+        order(autocomplete_order_clause(model, value_method, options))
     end
 
-    def autocomplete_select_clause(model_class, value_method, label_method, options)
-      table_name = model_class.table_name
+    def autocomplete_select_clause(model, value_method, label_method, options)
+      table_name = model.table_name
       selects = []
-      selects << "#{table_name}.#{model_class.primary_key}"
+      selects << "#{table_name}.#{model.primary_key}"
       selects << "#{table_name}.#{value_method}"
       selects << "#{table_name}.#{label_method}" if label_method
       options[:additional_data].each { |datum| selects << "#{table_name}.#{datum}" } if options[:additional_data]
       selects
     end
 
-    def autocomplete_where_clause(term, model_class, value_method, options)
+    def autocomplete_where_clause(term, model, value_method, options)
       term = term.gsub(/[_%]/) { |x| "\\#{x}" } # escape any _'s or %'s in the search term
       term = "#{term}%"
       term = "%#{term}" if options[:full_search]
-      table_name = model_class.table_name
+      table_name = model.table_name
       lower = options[:case_sensitive] ? '' : 'LOWER'
       ["#{lower}(#{table_name}.#{value_method}) LIKE #{lower}(?) ESCAPE \"\\\"", term]
     end
@@ -87,11 +87,11 @@ module AutocompleteRails
       options[:limit] ||= 10
     end
 
-    def autocomplete_order_clause(model_class, value_method, options)
+    def autocomplete_order_clause(model, value_method, options)
       return options[:order] if options[:order]
 
       # default to ASC order
-      table_prefix = "#{model_class.table_name}."
+      table_prefix = "#{model.table_name}."
       "LOWER(#{table_prefix}#{value_method}) ASC"
     end
 

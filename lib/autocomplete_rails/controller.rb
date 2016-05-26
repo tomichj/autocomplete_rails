@@ -17,7 +17,7 @@ module AutocompleteRails
       # generates a method named autocomplete_user_email.
       #
       # Parameters:
-      # * model_class - symbol of the model class to autocomplete.
+      # * model - symbol of the model class to autocomplete.
       # * value_method - symbol of the method on model to autocomplete, supplies the 'value' field in results.
       #                  Also used as the label unless you supply options[:label_method]
       # * options - hash of optional settings.
@@ -35,10 +35,10 @@ module AutocompleteRails
       #
       # Be sure to add a route to the generated controller method.
       #
-      def autocomplete(model_class, value_method, options = {})
+      def autocomplete(model, value_method, options = {})
         label_method = options[:label_method] || value_method
-        model_constant = model_class.to_s.camelize.constantize
-        autocomplete_method_name = "autocomplete_#{model_class}_#{value_method}"
+        model_constant = model.to_s.camelize.constantize
+        autocomplete_method_name = "autocomplete_#{model}_#{value_method}"
 
         define_method(autocomplete_method_name) do
           results = autocomplete_results(model_constant, value_method, label_method, options)
@@ -50,17 +50,16 @@ module AutocompleteRails
     protected
 
     def autocomplete_results(model_class, value_method, label_method = nil, options)
-      search_term = params[:term]
-      return {} if search_term.blank?
+      term = params[:term]
+      return {} if term.blank?
+
       results = model_class.where(nil) # make an empty scope to add select, where, etc, to.
-
-      scopes  = Array(options[:scopes])
+      scopes  = Array.new(options[:scopes])
       scopes.each { |scope| results = results.send(scope) } unless scopes.empty?
-
       results = results.select(autocomplete_select_clause(model_class, value_method, label_method, options)) unless
         options[:full_model]
       results.
-        where(autocomplete_where_clause(search_term, model_class, value_method, options)).
+        where(autocomplete_where_clause(term, model_class, value_method, options)).
         limit(autocomplete_limit_clause(options)).
         order(autocomplete_order_clause(model_class, value_method, options))
     end
@@ -76,7 +75,7 @@ module AutocompleteRails
     end
 
     def autocomplete_where_clause(term, model_class, value_method, options)
-      term = "#{term.gsub(/([_%\\])/, '\\\\\1')}" # escape any _'s or %'s in the search term
+      term = term.gsub(/[_%]/) { |x| "\\#{x}" } # escape any _'s or %'s in the search term
       term = "#{term}%"
       term = "%#{term}" if options[:full_search]
       table_name = model_class.table_name

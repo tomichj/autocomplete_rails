@@ -31,6 +31,7 @@ module AutocompleteRails
       # * :additional_data - collect additional data. Will be added to select unless full_model is invoked.
       # * :full_search - search the entire value string for the term. Defaults to false, in which case the string must
       #                  start with the term.
+      # * :scopes - limit query to these scopes, passed in as an array, e.g. scopes: [:scope1, :scope2]
       #
       # Be sure to add a route to the generated controller method.
       #
@@ -52,6 +53,10 @@ module AutocompleteRails
       search_term = params[:term]
       return {} if search_term.blank?
       results = model_class.where(nil) # make an empty scope to add select, where, etc, to.
+
+      scopes  = Array(options[:scopes])
+      scopes.each { |scope| results = results.send(scope) } unless scopes.empty?
+
       results = results.select(autocomplete_select_clause(model_class, value_method, label_method, options)) unless
         options[:full_model]
       results.

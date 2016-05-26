@@ -8,13 +8,18 @@ module AutocompleteRails
       #
       # Generate an autocomplete controller action.
       #
-      # The generated method is named  "autocomplete_#{model_class}_#{value_method}", e.g.
+      # The controller action is intended to interact with jquery UI's autocomplete widget. The autocomplete
+      # controller provides suggestions while you type into a field that is provisioned with JQuery's autocomplete
+      # widget.
       #
-      #   class ProductController
+      # The generated method is named  "autocomplete_#{model_class}_#{value_method}", for example:
+      #
+      #   class UsersController
       #     autocomplete :user, :email
       #   end
       #
-      # generates a method named autocomplete_user_email.
+      # generates a method named `autocomplete_user_email`.
+      #
       #
       # Parameters:
       # * model - symbol of the model class to autocomplete.
@@ -22,7 +27,8 @@ module AutocompleteRails
       #                  Also used as the label unless you supply options[:label_method]
       # * options - hash of optional settings.
       #
-      # Options:
+      #
+      # Options accepts a hash of:
       # * :label_method - call a separate method for the label, otherwise defaults to value_method. If your label
       #                   method is a method that is *not* a column in your DB, you may need options[:full_model].
       # * :full_model - load full model instead of only selecting the specified values. Default is false.
@@ -31,9 +37,16 @@ module AutocompleteRails
       # * :additional_data - collect additional data. Will be added to select unless full_model is invoked.
       # * :full_search - search the entire value string for the term. Defaults to false, in which case the string must
       #                  start with the term.
-      # * :scopes - limit query to these scopes, passed in as an array, e.g. scopes: [:scope1, :scope2]
+      # * :scopes - limit query to these scopes, passed in as an array, for example: `scopes: [:scope1, :scope2]`
       #
-      # Be sure to add a route to the generated controller method.
+      #
+      # Be sure to add a route to reach the generated controller method. Example:
+      #
+      #   resources :users do
+      #     get :autocomplete_user_email, on: :collection
+      #   end
+      #
+      # See app/assets/javascripts/autocomplete.js.
       #
       def autocomplete(model_symbol, value_method, options = {})
         label_method = options[:label_method] || value_method

@@ -5,9 +5,10 @@ Easily set up Rails controller actions for use with jQuery UI's Autocomplete wid
 Please use [GitHub Issues] to report bugs. You can contact me directly on twitter at
 [@JustinTomich](https://twitter.com/justintomich).
 
-`AutocompleteRails` is a very lightweight component with easily understandable, and minimal, source code.
-
-`AutocompleteRails` only supports ActiveRecord.
+`AutocompleteRails` is a lightweight component with easily understandable, minimal, source code. There are
+other autocomplete gems out there that are much more complicated, support multiple ORMs, and provide client-side 
+javascript. `AutocompleteRails` only supports ActiveRecord, and only provides rails controller functionality. For the
+client side, you use jQuery UI's autocomplete widget.
 
 
 
@@ -33,7 +34,8 @@ You will also need to install jQuery UI, see the [jquery-ui-rails](https://githu
 ### Controller
 
 Any controller needing an autocomplete action should invoke class method `autocomplete` with the model class and 
-method to be autocompleted as arguments. An autocomplete method is generated. 
+method to be autocompleted as arguments. An autocomplete method is generated. Then add a route to your generated 
+method. 
 
 For example, to autocomplete users by email address in a Posts controller:
 
@@ -56,9 +58,10 @@ end
 
 ### Wire up jQuery UI's autocomplete widget
 
-jQuery UI's autocomplete widget is flexible and well documented. Just set the widget's source property to the 
-autocomplete rails controller path you wish to access. A common way to do this is by setting the path to
-the autocomplete action in a data attribute of the input. For example:
+jQuery UI's autocomplete widget is flexible and well documented. The most basic setup: just set the widget's 
+`source` option to the autocomplete rails controller path you wish to access. A common way to do
+this is by setting the path to the autocomplete action in a data attribute of the input, and access it from
+coffeescript/javascript. For example:
 
 Place the url in a data attribute of a text field tag:
 
@@ -71,13 +74,13 @@ Place the url in a data attribute of a text field tag:
 Which creates an <input> tag that looks like this:
 
 ```html
-<input name="search" type="text" data-autocomplete="users/autocomplete_user_email">
+<input name="search" type="text" data-autocomplete="/users/autocomplete_user_email">
 ```
 
 
 A simple jQuery event handler will attach autocomplete to any input[data-autocomplete]. Pass 
-in your url as the source to jQuery's autocomplete widget. Here's an example that adds autocomplete
-to the input field show above:
+in your `autocomplete` url as the source to jQuery's autocomplete widget. Here's an example (using turbolinks) 
+that adds the `autocomplete` widget to the input field show above:
 
 ```coffeescript
 $(document).on 'turbolinks:load', ->
@@ -94,7 +97,16 @@ http://api.jqueryui.com/autocomplete/
 
 ## Advanced Usage
 
-Autocomplete has a number of options.
+AutocompleteRails has a number of options, see [controller.rb](lib/autocomplete_rails/controller.rb).
+
+
+## Credits & Thanks
+
+This gem was inspired by, and draws heavily from:
+
+* [autocomplete](https://github.com/voislavj/autocomplete)
+* [rails3-jquery-autocomplete](https://github.com/crowdint/rails3-jquery-autocomplete)
+* [rails4-autocomplete](https://github.com/peterwillcn/rails4-autocomplete)
 
 
 ## License

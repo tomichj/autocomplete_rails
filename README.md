@@ -1,7 +1,11 @@
 # AutocompleteRails
 
-Easily set up Rails controller actions for use with jQuery UI's Autocomplete widget. `AutocompleteRails` is a very
-lightweight component with easily understandable, and minimal, source code.
+Easily set up Rails controller actions for use with jQuery UI's Autocomplete widget.
+
+Please use [GitHub Issues] to report bugs. You can contact me directly on twitter at
+[@JustinTomich](https://twitter.com/justintomich).
+
+`AutocompleteRails` is a very lightweight component with easily understandable, and minimal, source code.
 
 `AutocompleteRails` only supports ActiveRecord.
 
@@ -21,7 +25,7 @@ And install the gem:
 bundle install
 ```
 
-You will also need to install jQuery UI, see (jquery-ui-rails)[https://github.com/joliss/jquery-ui-rails].
+You will also need to install jQuery UI, see the [jquery-ui-rails](https://github.com/joliss/jquery-ui-rails) gem.
 
 
 ## Use
@@ -96,3 +100,6 @@ Autocomplete has a number of options.
 ## License
 
 This project rocks and uses MIT-LICENSE.
+
+
+[GitHub Issues]: https://github.com/tomichj/autocomplete_rails/issues

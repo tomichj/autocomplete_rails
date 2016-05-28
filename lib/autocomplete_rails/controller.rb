@@ -12,7 +12,7 @@ module AutocompleteRails
       # controller provides suggestions while you type into a field that is provisioned with JQuery's autocomplete
       # widget.
       #
-      # The generated method is named  "autocomplete_#{model_class}_#{value_method}", for example:
+      # The generated method is named  "autocomplete_#{model_symbol}_#{value_method}", for example:
       #
       #   class UsersController
       #     autocomplete :user, :email
@@ -22,9 +22,9 @@ module AutocompleteRails
       #
       #
       # Parameters:
-      # * model - symbol of the model class to autocomplete.
-      # * value_method - symbol of the method on model to autocomplete, supplies the 'value' field in results.
-      #                  Also used as the label unless you supply options[:label_method]
+      # * model_symbol - model class to autocomplete, e.g.
+      # * value_method - method on model to autocomplete. This supplies the 'value' field in results.
+      #                  Also used as the label unless you supply options[:label_method].
       # * options - hash of optional settings.
       #
       #
@@ -33,12 +33,12 @@ module AutocompleteRails
       #                   method is a method that is *not* a column in your DB, you may need options[:full_model].
       # * :full_model - load full model instead of only selecting the specified values. Default is false.
       # * :limit - default is 10.
-      # * :case_sensitive - default is false.
+      # * :case_sensitive - if true, the search is case sensitive. Default is false.
       # * :additional_data - collect additional data. Will be added to select unless full_model is invoked.
-      # * :full_search - search the entire value string for the term. Defaults to false, in which case the string must
-      #                  start with the term.
-      # * :scopes - limit query to these scopes, passed in as an array, for example: `scopes: [:scope1, :scope2]`
-      #
+      # * :full_search - search the entire value string for the term. Defaults to false, in which case the value
+      #                  field being searched (see value_method above) must start with the search term.
+      # * :scopes - limit query to these ActiveRecord scopes, passed in as an array,
+      #             for example: `scopes: [:scope1, :scope2]`
       #
       # Be sure to add a route to reach the generated controller method. Example:
       #
@@ -46,7 +46,12 @@ module AutocompleteRails
       #     get :autocomplete_user_email, on: :collection
       #   end
       #
-      # See app/assets/javascripts/autocomplete.js.
+      # The following example searches for users by email, but displays their :full_name as the label.
+      # The full_model flag is also loaded, as full_name is a method that synthesizes multiple columns.
+      #
+      #   class UsersController
+      #     autocomplete :user, :email, label_method: full_name, full_model: true
+      #   end
       #
       def autocomplete(model_symbol, value_method, options = {})
         label_method = options[:label_method] || value_method

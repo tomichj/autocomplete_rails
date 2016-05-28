@@ -72,7 +72,7 @@ module AutocompleteRails
       return {} if term.blank?
 
       results = model.where(nil) # make an empty scope to add select, where, etc, to.
-      scopes  = Array.new(options[:scopes])
+      scopes  = Array(options[:scopes])
       scopes.each { |scope| results = results.send(scope) } unless scopes.empty?
       results = results.select(autocomplete_select_clause(model, value_method, label_method, options)) unless
         options[:full_model]

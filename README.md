@@ -12,6 +12,9 @@ controller functionality. Client side, you just use jQuery UI's autocomplete wid
 
 `AutocompleteRails` supports Rails 4 and Rails 5.
 
+[![Gem Version](https://badge.fury.io/rb/autocomplete_rails.svg)](https://badge.fury.io/rb/autocomplete_rails) ![Build status](https://travis-ci.org/tomichj/autocomplete_rails.svg?branch=master)
+
+
 ## Install
 
 To get started, add the gem to your Rails app's `Gemfile`:

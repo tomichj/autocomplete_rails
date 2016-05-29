@@ -6,11 +6,11 @@ Please use [GitHub Issues] to report bugs. You can contact me directly on twitte
 [@JustinTomich](https://twitter.com/justintomich).
 
 `AutocompleteRails` is a lightweight component with easily understandable, minimal, source code. There are
-other autocomplete gems out there that are much more complicated, support multiple ORMs, and provide client-side 
-javascript. `AutocompleteRails` only supports ActiveRecord, and only provides rails controller functionality. For the
-client side, you use jQuery UI's autocomplete widget.
+other autocomplete gems out there that support multiple ORMs and provide client-side javascript, at the cost
+of increased complexity. `AutocompleteRails` only supports ActiveRecord, and only provides rails 
+controller functionality. Client side, you just use jQuery UI's autocomplete widget.
 
-
+`AutocompleteRails` supports Rails 4 and Rails 5.
 
 ## Install
 

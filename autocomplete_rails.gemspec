@@ -23,7 +23,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'factory_girl', '~> 4.4'
   s.add_development_dependency 'rspec-rails', '~> 3.1'
   s.add_development_dependency 'rspec-mocks', '~> 3.1'
-  # s.add_development_dependency 'capybara', '~> 2.6'
   s.add_development_dependency 'shoulda-matchers', '~> 2.8'
   s.add_development_dependency 'database_cleaner', '~> 1.5'
   s.add_development_dependency 'timecop', '~> 0.8'

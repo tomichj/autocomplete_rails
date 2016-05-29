@@ -37,8 +37,8 @@ You will also need to install jQuery UI, see the [jquery-ui-rails](https://githu
 ### Controller
 
 Any controller needing an autocomplete action should invoke class method `autocomplete` with the model class and 
-method to be autocompleted as arguments. An autocomplete method is generated. Then add a route to your generated 
-method. 
+method to be autocompleted as arguments. An autocomplete method is generated. Then add a route leading to your 
+generated method.
 
 For example, to autocomplete users by email address in a Posts controller:
 

@@ -10,8 +10,8 @@ Gem::Specification.new do |s|
   s.authors     = ['Justin Tomich']
   s.email       = ['justin@tomich.org']
   s.homepage    = 'https://github.com/tomichj/autocomplete_rails'
-  s.summary     = "Easily use jQuery's autocomplete plugin with rails applications."
-  s.description = "Easily use jQuery's autocomplete plugin with rails applications."
+  s.summary     = "Easily use jQuery UI's autocomplete widget with Rails applications."
+  s.description = "Easily use jQuery UI's autocomplete widget with Rails applications."
   s.license     = 'MIT'
 
   s.files = Dir['{app,config,db,lib}/**/*', 'MIT-LICENSE', 'Rakefile', 'README.rdoc']

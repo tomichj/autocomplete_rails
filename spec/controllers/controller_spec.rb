@@ -1,11 +1,7 @@
 require 'spec_helper'
 
+# Unit tests for autocomplete's controller module.
 describe AutocompleteRails::Controller do
-  before(:all) do
-    @user1 = create(:user, :with_full_name)
-    @user2 = create(:user, :with_full_name)
-  end
-
   before do
     class FakesController < ApplicationController
       include AutocompleteRails::Controller
@@ -75,6 +71,11 @@ describe AutocompleteRails::Controller do
   end
 
   context '#autocomplete_build_json' do
+    before(:each) do
+      @user1 = create(:user, :with_full_name)
+      @user2 = create(:user, :with_full_name)
+    end
+
     it 'renders value-only' do
       expect(subject.autocomplete_build_json(User.all, :email, :email, {})).to(
         contain_exactly({ id: 1, label: @user1.email, value: @user1.email },
@@ -95,21 +96,4 @@ describe AutocompleteRails::Controller do
     end
   end
 
-  describe UsersController, type: :controller do
-    it { respond_to? :autocomplete_user_email }
-
-    context 'simple search term' do
-      before :each do
-        get :autocomplete_user_email, term: 'user'
-      end
-
-      it 'is successful' do
-        expect(response).to be_success
-      end
-
-      it 'returns 3 users' do
-        expect(json.size).to eq(2)
-      end
-    end
-  end
 end

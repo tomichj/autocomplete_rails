@@ -103,6 +103,88 @@ http://api.jqueryui.com/autocomplete/
 AutocompleteRails has a number of options, see [controller.rb](lib/autocomplete_rails/controller.rb).
 
 
+### label_method
+
+Call a separate method to generate the label in the response. If a `label_method` is not specified, it will
+default to the `value_method`.
+
+If your `label_method` is *not* a single column in your database but is reliant on multiple columns in your model,
+you need to specify `full_model` (see below) to load all columns for your model.
+
+Example:
+
+```ruby
+class PostsController < ApplicationController
+    autocomplete :user, :email, label_method: :name
+end
+```
+
+
+### full_model
+
+Load the full model from the database. Default is `false`.
+
+When `full_model` is `false`, only the `value_method` and `label_method` are selected from the database.
+
+Example: your `label_method` is `first_and_last_name`, which is composed of multiple columns from your database. 
+Load the full model to allow the method to be called:
+
+```ruby
+class PostsController < ApplicationController
+    autocomplete :user, :email, label_method: :full_name, full_model: true
+end
+```
+
+
+### limit
+
+Limit the number of responses. The default limit is 10.
+
+Example, setting the limit to 5:
+
+```ruby
+class PostsController < ApplicationController
+    autocomplete :user, :email, limit: 5
+end
+```
+
+
+### case_sensitive
+
+If set to true, a case-sensitive search is performed. Defaults to false, performing a case-insensitive search. 
+
+```ruby
+class PostsController < ApplicationController
+    autocomplete :user, :email, case_sensitive: true
+end
+```
+
+
+### additional_data
+
+Additional data specifies additional methods to be returned in the response. Specify additional_data as an array.
+
+If `additional_data` is specified and `full_model` is *not* specified, each additional_data column is added to
+the columns selected.
+
+```ruby
+class PostsController < ApplicationController
+    autocomplete :user, :email, additional_data: [:first_name, :last_name]
+end
+```
+
+
+### scopes
+
+Base your queries on the specified scope(s). Scopes are passed in as an array.
+ 
+```ruby
+class PostsController < ApplicationController
+    autocomplete :user, :email, scopes: [:active_users]
+end
+```
+
+
 ## Credits & Thanks
 
 This gem was inspired by, and draws heavily from:

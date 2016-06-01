@@ -13,13 +13,9 @@ Rails.backtrace_cleaner.remove_silencers!
 DatabaseCleaner.strategy = :truncation
 
 #
-# Require up all support files.
+# Require test support, factories.
 #
 Dir[File.join(File.dirname(__FILE__), 'support/**/*.rb')].each { |f| require f }
-
-#
-# Load factory girl factories.
-#
 Dir[File.join(File.dirname(__FILE__), 'factories/**/*.rb')].each { |f| require f }
 
 # Build test database in spec/dummy/db/

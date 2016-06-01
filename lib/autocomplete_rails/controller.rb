@@ -37,8 +37,9 @@ module AutocompleteRails
       # * :additional_data - collect additional data. Will be added to select unless full_model is invoked.
       # * :full_search - search the entire value string for the term. Defaults to false, in which case the value
       #                  field being searched (see value_method above) must start with the search term.
-      # * :scopes - query based on the supplied ActiveRecord scopes, passed in as an array,
-      #             for example: `scopes: [:scope1, :scope2]`
+      # * :scopes - Build your autocomplete query from the specified ActiveRecord scope(s). Multiple scopes can be
+      #             used, pass them in as an array. Example: `scopes: [:scope1, :scope2]`
+      # * :order - specify an order clause, defaults to 'LOWER(#{table}.#{value_method}) ASC'
       #
       # Be sure to add a route to reach the generated controller method. Example:
       #

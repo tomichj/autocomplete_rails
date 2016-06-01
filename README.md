@@ -34,6 +34,14 @@ You will also need to install jQuery UI, see the [jquery-ui-rails](https://githu
 
 ## Use
 
+Once the gem is installed, there are 3 steps to set up an autocomplete:
+
+* call `autocomplete` in your controller
+* add a route to your newly generated autocomplete method
+* provision an input in your UI with jQuery UI's autocomplete widget
+
+
+
 ### Controller
 
 Any controller needing an autocomplete action should invoke class method `autocomplete` with the model class and 
@@ -50,7 +58,10 @@ end
 
 `autocomplete :user, :email` creates a method on `PostsController` named __autocomplete_user_email__.
 
-Add a route to your autocomplete method. For the controller listed above, you might add:
+
+### Routes
+
+Add a route to your `autocomplete` action. For the controller listed above, you might add:
 
 ```ruby
 resources :posts do
@@ -98,7 +109,7 @@ You can read amore about jQuery UI's autocomplete here:
 http://api.jqueryui.com/autocomplete/
 
 
-## Advanced Usage
+## Options
 
 AutocompleteRails has a number of options, see [controller.rb](lib/autocomplete_rails/controller.rb).
 
@@ -162,7 +173,7 @@ end
 
 ### additional_data
 
-Additional data specifies additional methods to be returned in the response. Specify additional_data as an array.
+Specify additional method called and returned in the response. Specify additional_data as an array.
 
 If `additional_data` is specified and `full_model` is *not* specified, each additional_data column is added to
 the columns selected.
@@ -176,13 +187,19 @@ end
 
 ### scopes
 
-Base your queries on the specified scope(s). Scopes are passed in as an array.
- 
+Build your autocomplete query from the specified ActiveRecord scope(s). Multiple scopes can be used, 
+pass them in as an array.
+
 ```ruby
 class PostsController < ApplicationController
     autocomplete :user, :email, scopes: [:active_users]
 end
 ```
+
+
+### order
+
+Specify a sort order. If none is specified, defaults to `'LOWER(#{table}.#{value_method}) ASC'`.
 
 
 ## Credits & Thanks

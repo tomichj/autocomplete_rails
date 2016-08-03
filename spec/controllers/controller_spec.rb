@@ -33,18 +33,18 @@ describe AutocompleteRails::Controller do
 
   context '#autocomplete_where_clause' do
     it 'builds users.email where clause with search term' do
-      expected = ["LOWER(users.email) LIKE LOWER(?) ESCAPE \"\\\"", "gug%"]
+      expected = ["LOWER(users.email) LIKE LOWER(?)", "gug%"]
       expect(subject.autocomplete_where_clause('gug', User, :email, {})).to contain_exactly(*expected)
     end
 
     it 'builds users.email where caluse with search term and ignores label' do
-      expected = ["LOWER(users.email) LIKE LOWER(?) ESCAPE \"\\\"", "gug%"]
+      expected = ["LOWER(users.email) LIKE LOWER(?)", "gug%"]
       expect(subject.autocomplete_where_clause('gug', User, :email, { label_method: :fake_method })).to(
         contain_exactly(*expected))
     end
 
     it 'removes LOWER if case_sensitive set' do
-      expected = ["(users.email) LIKE (?) ESCAPE \"\\\"", "gug%"]
+      expected = ["(users.email) LIKE (?)", "gug%"]
       expect(subject.autocomplete_where_clause('gug', User, :email, { case_sensitive: true })).to(
         contain_exactly(*expected))
     end

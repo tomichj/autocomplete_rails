@@ -100,7 +100,7 @@ module AutocompleteRails
       table_name = model.table_name
       lower = options[:case_sensitive] ? '' : 'LOWER'
       ["#{lower}(#{table_name}.#{value_method}) LIKE #{lower}(?)", term] # escape default: \ on postgres, mysql, sqlite
-      # ["#{lower}(#{table_name}.#{value_method}) LIKE #{lower}(?) ESCAPE \"\\\"", term] # use single-quotes, not double
+      #["#{lower}(#{table_name}.#{value_method}) LIKE #{lower}(?) ESCAPE \"\\\"", term] # use single-quotes, not double
     end
 
     def autocomplete_limit_clause(options)

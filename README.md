@@ -8,7 +8,7 @@ Please use [GitHub Issues] to report bugs. You can contact me directly on twitte
 `AutocompleteRails` is a lightweight component with easily understandable, minimal, source code. There are
 other autocomplete gems out there that support multiple ORMs and provide client-side javascript, at the cost
 of increased complexity. `AutocompleteRails` only supports ActiveRecord, and only provides rails 
-controller functionality. Client side, you just use jQuery UI's autocomplete widget.
+controller functionality. Client side, you use jQuery UI's autocomplete widget, which you wire up yourself.
 
 `AutocompleteRails` supports Rails 4 and Rails 5.
 
@@ -65,7 +65,7 @@ Add a route to your `autocomplete` action. For the controller listed above, you 
 
 ```ruby
 resources :posts do
-  get :autocomplete_user_email, :on => :collection
+  get :autocomplete_user_email, on: :collection
 end
 ```
 

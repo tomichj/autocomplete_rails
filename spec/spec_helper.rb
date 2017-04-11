@@ -2,20 +2,22 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 ENV['RAILS_ENV'] ||= 'test'
 
 require File.expand_path('../dummy/config/environment.rb', __FILE__)
+
+# nasty hacky catch of environment data wiped out by tests run in rails 4 via appraisal
+if ActiveRecord::VERSION::STRING >= '5.0'
+  system('bin/rails dummy:db:environment:set RAILS_ENV=test')
+end
+
 require 'rspec/rails'
 require 'shoulda-matchers'
-require 'database_cleaner'
 require 'factory_girl'
 require 'timecop'
 
-
 Rails.backtrace_cleaner.remove_silencers!
-DatabaseCleaner.strategy = :truncation
 
 #
 # Require test support, factories.
 #
-Dir[File.join(File.dirname(__FILE__), 'support/**/*.rb')].each { |f| require f }
 Dir[File.join(File.dirname(__FILE__), 'factories/**/*.rb')].each { |f| require f }
 
 # Build test database in spec/dummy/db/
@@ -24,6 +26,12 @@ if defined?(ActiveRecord::Migration.maintain_test_schema!)
 else
   ActiveRecord::Migration.check_pending! # rails 4.0
 end
+
+if ActiveRecord::VERSION::STRING >= '4.2' && ActiveRecord::VERSION::STRING < '5.0'
+  ActiveRecord::Base.raise_in_transactional_callbacks = true
+end
+
+puts 'MAJOR:' + Rails::VERSION::MAJOR.to_s
 
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
@@ -38,12 +46,6 @@ RSpec.configure do |config|
   config.mock_with :rspec do |mocks|
     mocks.syntax = :expect
   end
-
-  config.include Requests::JsonHelpers, type: :controller
-
-  config.after(:each) do
-    DatabaseCleaner.clean       # Truncate the database
-  end
 end
 
 def mock_request(params = {})
@@ -53,6 +55,3 @@ def mock_request(params = {})
   req
 end
 
-# def current_user
-#   @current_user ||= FactoryGirl.create(:user, :with_company)
-# end

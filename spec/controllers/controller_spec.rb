@@ -13,6 +13,8 @@ describe AutocompleteRails::Controller do
   after { Object.send :remove_const, :FakesController }
   subject { FakesController.new }
 
+  it { respond_to? :autocomplete_user_email }
+
   context '#autocomplete_select_clause' do
     it 'with email value field' do
       expected = %w(users.email users.id)

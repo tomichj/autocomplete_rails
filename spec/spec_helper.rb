@@ -11,7 +11,6 @@ end
 require 'rspec/rails'
 require 'shoulda-matchers'
 require 'factory_girl'
-require 'timecop'
 
 Rails.backtrace_cleaner.remove_silencers!
 
@@ -31,7 +30,7 @@ if ActiveRecord::VERSION::STRING >= '4.2' && ActiveRecord::VERSION::STRING < '5.
   ActiveRecord::Base.raise_in_transactional_callbacks = true
 end
 
-puts 'MAJOR:' + Rails::VERSION::MAJOR.to_s
+# puts 'MAJOR:' + Rails::VERSION::MAJOR.to_s
 
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods

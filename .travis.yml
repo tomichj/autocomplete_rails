@@ -1,0 +1,23 @@
+cache: bundler
+
+language:
+  - ruby
+
+rvm:
+  - 2.2.2
+  - 2.3.3
+
+#branches:
+#  only:
+#    - master
+
+gemfile:
+  - gemfiles/4.2.gemfile
+  - gemfiles/5.0.gemfile
+
+#install:
+#  - 'bin/setup'
+
+sudo: false
+
+#script: bundle exec rspec --color --format documentation

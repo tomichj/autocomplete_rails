@@ -26,6 +26,7 @@ module AutocompleteRails
       # * value_method - method on model to autocomplete. This supplies the 'value' field in results.
       #                  Also used as the label unless you supply options[:label_method].
       # * options - hash of optional settings.
+      # * &block - an optional block to further modify the results set, e.g. `{ |results| results.where(smth: @instance_variable) }`
       #
       #
       # Options accepts a hash of:
@@ -39,6 +40,8 @@ module AutocompleteRails
       #                  field being searched (see value_method above) must start with the search term.
       # * :scopes - Build your autocomplete query from the specified ActiveRecord scope(s). Multiple scopes can be
       #             used, pass them in as an array. Example: `scopes: [:scope1, :scope2]`
+      #             If you need to pass additional arguments to your scope, define them as an array of arrays.
+      #             Example: `scopes: [:scope1, [:scope2, 'argument 1', 'argument 2] ]`
       # * :order - specify an order clause, defaults to 'LOWER(#{table}.#{value_method}) ASC'
       #
       # Be sure to add a route to reach the generated controller method. Example:
@@ -54,13 +57,13 @@ module AutocompleteRails
       #     autocomplete :user, :email, label_method: full_name, full_model: true
       #   end
       #
-      def autocomplete(model_symbol, value_method, options = {})
+      def autocomplete(model_symbol, value_method, options = {}, &block)
         label_method = options[:label_method] || value_method
         model = model_symbol.to_s.camelize.constantize
         autocomplete_method_name = "autocomplete_#{model_symbol}_#{value_method}"
 
         define_method(autocomplete_method_name) do
-          results = autocomplete_results(model, value_method, label_method, options)
+          results = autocomplete_results(model, value_method, label_method, options, &block)
           render json: autocomplete_build_json(results, value_method, label_method, options), root: false
         end
       end
@@ -68,13 +71,14 @@ module AutocompleteRails
 
     protected
 
-    def autocomplete_results(model, value_method, label_method = nil, options)
+    def autocomplete_results(model, value_method, label_method = nil, options, &block)
       term = params[:term]
       return {} if term.blank?
 
       results = model.where(nil) # make an empty scope to add select, where, etc, to.
       scopes  = Array(options[:scopes])
-      scopes.each { |scope| results = results.send(scope) } unless scopes.empty?
+      scopes.each { |scope| if scope.is_a?(Array) then results = results.send(scope.slice(0), *scope.drop(1)) else results = results.send(scope) end } unless scopes.empty?
+      results = instance_exec(results, &block) if block
       results = results.select(autocomplete_select_clause(model, value_method, label_method, options)) unless
         options[:full_model]
       results.

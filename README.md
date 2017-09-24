@@ -3,7 +3,7 @@
 Easily set up Rails controller actions for use with jQuery UI's Autocomplete widget.
 
 Please use [GitHub Issues] to report bugs. You can contact me directly on twitter at
-[@JustinTomich](https://twitter.com/justintomich).
+[@JustinTomich].
 
 `AutocompleteRails` is a lightweight component with easily understandable, minimal, source code. There are
 other autocomplete gems out there that support multiple ORMs and provide client-side javascript, at the cost
@@ -29,7 +29,9 @@ And install the gem:
 bundle install
 ```
 
-You will also need to install jQuery UI, see the [jquery-ui-rails](https://github.com/joliss/jquery-ui-rails) gem.
+You will also need to install:
+* jQuery, see the  [jquery-rails] gem.
+* jQuery UI, see the [jquery-ui-rails] gem.
 
 
 ## Use
@@ -80,9 +82,7 @@ coffeescript/javascript. For example:
 Place the url in a data attribute of a text field tag:
 
 ```erb
-<% form_tag articles_path do %>
-    <%= text_field_tag :search, params[:search], data: { autocomplete: autocomplete_user_email_users_path }
-<% end %>
+<%= text_field_tag :search, params[:search], data: { autocomplete: autocomplete_user_email_users_path } %>
 ```
 
 Which creates an <input> tag that looks like this:
@@ -104,7 +104,7 @@ $(document).on 'turbolinks:load', ->
       source: url
 ```
 
-You can read amore about jQuery UI's autocomplete here:
+You can read more about jQuery UI's autocomplete here:
 
 http://api.jqueryui.com/autocomplete/
 
@@ -215,5 +215,8 @@ This gem was inspired by, and draws heavily from:
 
 This project rocks and uses MIT-LICENSE.
 
-
+[@JustinTomich]: https://twitter.com/justintomich
 [GitHub Issues]: https://github.com/tomichj/autocomplete_rails/issues
+[jquery-rails]: https://github.com/rails/jquery-rails
+[jquery-ui-rails]: https://github.com/joliss/jquery-ui-rails
+

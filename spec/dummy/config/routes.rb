@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   get 'users/show'
   get 'users/autocomplete_user_email'
+  get 'scoped_users/autocomplete_user_email'
+  get 'block_users/:name/autocomplete_user_email', to: 'block_users#autocomplete_user_email', as: :block_users_autocomplete_user_email
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

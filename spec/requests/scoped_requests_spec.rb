@@ -23,5 +23,4 @@ describe 'scopes' do
       end
     end
   end
-
 end

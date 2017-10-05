@@ -23,5 +23,4 @@ describe 'blocks' do
       end
     end
   end
-
 end

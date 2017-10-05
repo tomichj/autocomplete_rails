@@ -44,5 +44,4 @@ describe 'search api' do
       end
     end
   end
-
 end

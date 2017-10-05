@@ -29,5 +29,4 @@ describe 'search api' do
       expect(json[0]['value']).to eq(@user1.email)
     end
   end
-
 end

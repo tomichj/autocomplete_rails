@@ -10,7 +10,7 @@ end
 
 require 'rspec/rails'
 require 'shoulda-matchers'
-require 'factory_girl'
+require 'factory_bot'
 
 Rails.backtrace_cleaner.remove_silencers!
 
@@ -33,7 +33,7 @@ end
 # puts 'MAJOR:' + Rails::VERSION::MAJOR.to_s
 
 RSpec.configure do |config|
-  config.include FactoryGirl::Syntax::Methods
+  config.include FactoryBot::Syntax::Methods
   config.infer_spec_type_from_file_location!
   config.order = :random
   config.use_transactional_fixtures = true

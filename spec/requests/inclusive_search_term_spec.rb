@@ -15,7 +15,8 @@ describe 'search api' do
       end
 
       it 'is successful' do
-        expect(response).to be_success
+        # expect(response).to be_success
+        expect(response).to have_http_status(200)
       end
 
       it 'returns all users' do
@@ -36,7 +37,8 @@ describe 'search api' do
       end
 
       it 'is successful' do
-        expect(response).to be_success
+        # expect(response).to be_success
+        expect(response).to have_http_status(200)
       end
 
       it 'returns default limit amount of users' do

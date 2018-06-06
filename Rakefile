@@ -27,3 +27,10 @@ RSpec::Core::RakeTask.new(:spec)
 desc 'Run all specs in spec directory (excluding plugin specs)'
 task default: :spec
 
+task :build do
+  system "gem build user_time_zones.gemspec"
+end
+
+task release: :build do
+  system "gem push bundler-#{UserNaming::VERSION}"
+end

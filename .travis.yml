@@ -4,8 +4,10 @@ language:
   - ruby
 
 rvm:
-  - 2.2.2
+  - 2.2.6
   - 2.3.3
+  - 2.4.1
+  - 2.5.1
 
 #branches:
 #  only:
@@ -14,6 +16,13 @@ rvm:
 gemfile:
   - gemfiles/4.2.gemfile
   - gemfiles/5.0.gemfile
+  - gemfiles/5.1.gemfile
+  - gemfiles/5.2.gemfile
+
+#matrix:
+#  exclude:
+#    - rvm: 2.2.6
+#      gemfile: gemfiles/5.2.gemfile
 
 #install:
 #  - 'bin/setup'

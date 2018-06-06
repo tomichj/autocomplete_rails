@@ -26,7 +26,8 @@ module AutocompleteRails
       # * value_method - method on model to autocomplete. This supplies the 'value' field in results.
       #                  Also used as the label unless you supply options[:label_method].
       # * options - hash of optional settings.
-      # * &block - an optional block to further modify the results set, e.g. `{ |results| results.where(smth: @instance_variable) }`
+      # * &block - an optional block to further modify the results set,
+      #            e.g. `{ |results| results.where(smth: @instance_variable) }`
       #
       #
       # Options accepts a hash of:
@@ -124,7 +125,7 @@ module AutocompleteRails
 
       # default to ASC order
       table_prefix = "#{model.table_name}."
-      "LOWER(#{table_prefix}#{value_method}) ASC"
+      Arel.sql("LOWER(#{table_prefix}#{value_method}) ASC")
     end
 
     def autocomplete_build_json(results, value_method, label_method, options)

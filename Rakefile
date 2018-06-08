@@ -32,5 +32,5 @@ task :build do
 end
 
 task release: :build do
-  system "gem push bundler-#{AutocompleteRails::VERSION}"
+  system "gem push autocomplete_rails-#{AutocompleteRails::VERSION}"
 end

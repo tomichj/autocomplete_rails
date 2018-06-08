@@ -26,11 +26,3 @@ RSpec::Core::RakeTask.new(:spec)
 
 desc 'Run all specs in spec directory (excluding plugin specs)'
 task default: :spec
-
-task :build do
-  system "gem build autocomplete_rails.gemspec"
-end
-
-task release: :build do
-  system "gem push autocomplete_rails-#{AutocompleteRails::VERSION}"
-end
